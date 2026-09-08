@@ -1,0 +1,117 @@
+# =========================
+# ENV / SECRETS
+# =========================
+
+.env
+.env.*
+!.env.example
+
+# =========================
+# PYTHON
+# =========================
+
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+*.so
+
+# Virtual environments
+venv/
+.venv/
+env/
+ENV/
+**/medical/
+
+# =========================
+# NODE
+# =========================
+
+node_modules/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Frontend build
+dist/
+build/
+.next/
+.nuxt/
+.output/
+.vite/
+
+# =========================
+# DATABASES
+# =========================
+
+**/chroma_db/
+**/.chroma/
+*.db
+*.sqlite
+*.sqlite3
+
+# =========================
+# PYTHON CACHE / TESTING
+# =========================
+
+.pytest_cache/
+.coverage
+.coverage.*
+htmlcov/
+.mypy_cache/
+.tox/
+.nox/
+
+# =========================
+# JUPYTER / AI CACHE
+# =========================
+
+.ipynb_checkpoints/
+.huggingface/
+.cache/
+
+# =========================
+# IDE
+# =========================
+
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# =========================
+# OS
+# =========================
+
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# =========================
+# LOGS / TEMP
+# =========================
+
+*.log
+logs/
+*.tmp
+*.temp
+*.bak
+*.backup
+
+# =========================
+# MIGRATION
+# =========================
+
+*_checkpoint.json
+migration_checkpoint.json
+
+# =========================
+# CREDENTIALS
+# =========================
+
+*.pem
+*.key
+credentials.json
+service-account.json

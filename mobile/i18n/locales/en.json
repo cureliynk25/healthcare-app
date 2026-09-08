@@ -1,0 +1,263 @@
+{
+  "common": {
+    "next": "Next",
+    "continue": "Continue",
+    "explore": "Explore"
+  },
+  "splash": {
+    "tagline": "Your Health, Our Priority",
+    "badgeAiPowered": "AI Powered",
+    "badgeTrusted": "Trusted",
+    "badgeSecure": "Secure",
+    "companion": "Your personal health companion",
+    "availability": "24/7 by your side"
+  },
+  "language": {
+    "title": "Choose Your\nPreferred Language",
+    "subtitle": "We will care for you in your language"
+  },
+  "careType": {
+    "title": "What type of care\nare you looking for?",
+    "subtitle": "Select the option that suits you best",
+    "personal": {
+      "title": "Personal Care",
+      "subtitle": "Care for myself"
+    },
+    "family": {
+      "title": "Family Care",
+      "subtitle": "Manage family health"
+    },
+    "women": {
+      "title": "Women Wellness",
+      "subtitle": "Women health & wellness"
+    },
+    "elder": {
+      "title": "Elder Care",
+      "subtitle": "Care for parents / elders"
+    }
+  },
+  "permissions": {
+    "title": "Allow Permissions\nto provide better care",
+    "subtitle": "Your privacy is our priority",
+    "location": {
+      "title": "Location Access",
+      "subtitle": "Find nearby doctors & hospitals"
+    },
+    "camera": {
+      "title": "Camera Access",
+      "subtitle": "Upload prescriptions & reports"
+    },
+    "notifications": {
+      "title": "Notification Access",
+      "subtitle": "Medicine reminders & updates"
+    },
+    "microphone": {
+      "title": "Microphone Access",
+      "subtitle": "Voice search & AI assistant"
+    }
+  },
+  "auth": {
+    "google": "Continue with Google",
+    "apple": "Continue with Apple",
+    "appleComingSoon": "Apple sign-in is coming soon.",
+    "login": {
+      "title": "Welcome Back!",
+      "subtitle": "Login to continue",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "you@example.com",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Enter your password",
+      "forgotPassword": "Forgot Password?",
+      "submit": "Login",
+      "or": "or",
+      "otp": "Login with OTP",
+      "otpComingSoon": "OTP login is coming soon.",
+      "newHere": "New here?",
+      "createAccount": "Create an Account"
+    },
+    "signup": {
+      "title": "Create Account",
+      "subtitle": "Join Cureliynk for better care",
+      "nameLabel": "Full Name",
+      "namePlaceholder": "John Doe",
+      "emailLabel": "Email Address",
+      "emailPlaceholder": "you@example.com",
+      "phoneLabel": "Mobile Number (optional)",
+      "phonePlaceholder": "98765 43210",
+      "passwordLabel": "Password",
+      "passwordPlaceholder": "Create a password",
+      "submit": "Create Account",
+      "alreadyHaveAccount": "Already have an account?",
+      "login": "Login"
+    }
+  },
+  "dashboard": {
+    "hero": {
+      "askAi": {
+        "title": "Your AI Health Assistant",
+        "subtitle": "Get instant answers to your health questions"
+      },
+      "pregnancy": {
+        "title": "Complete Pregnancy Care",
+        "subtitle": "Expert guidance for every step of your journey"
+      }
+    },
+    "greeting": {
+      "morning": "Good Morning, {{name}}!",
+      "afternoon": "Good Afternoon, {{name}}!",
+      "evening": "Good Evening, {{name}}!",
+      "subtitle": "How are you feeling today?",
+      "locating": "Locating…"
+    },
+    "disclaimer": {
+      "title": "Important Health Disclaimer",
+      "text": "Cureliynk does not diagnose, prescribe, or provide medicines. AI-generated information may contain errors and must not replace professional medical advice."
+    },
+    "askAi": {
+      "cardTitle": "Ask AI",
+      "cardSubtitle": "Ask anything about health, symptoms, medicines, and treatments.",
+      "cta": "Chat with AI"
+    },
+    "pregnancyCare": {
+      "title": "Pregnancy Care",
+      "subtitle": "Complete care for Mom & Baby"
+    },
+    "babyCareDoctors": {
+      "title": "Baby Care Doctors",
+      "subtitle": "Find trusted doctors for your baby"
+    },
+    "emergency": {
+      "title": "Emergency Help",
+      "subtitle": "Get help immediately in any emergency",
+      "callNow": "Call Now",
+      "firstAidGuide": "First Aid Guide"
+    },
+    "nearbyCare": {
+      "title": "Doctors & Hospitals Near You",
+      "findDoctors": "Find Doctors",
+      "findDoctorsSubtitle": "Search by speciality, location & experience",
+      "findHospitals": "Find Hospitals",
+      "findHospitalsSubtitle": "Nearby hospitals with details & directions"
+    },
+    "healthReminder": {
+      "title": "Today's Health Reminder",
+      "emptyMessage": "No reminders set yet."
+    },
+    "features": {
+      "medicineReminder": {
+        "title": "Medicine Reminder"
+      },
+      "labsNearMe": {
+        "title": "Labs Near Me"
+      },
+      "healthInsurance": {
+        "title": "Health Insurance"
+      }
+    },
+    "upcomingMedicine": {
+      "title": "Upcoming Medicine",
+      "emptyMessage": "No upcoming medicines yet."
+    },
+    "comingSoon": {
+      "genericMessage": "This feature is coming soon. We're working on it."
+    },
+    "doctorsResults": {
+      "loading": "Finding nearby care...",
+      "emptyResults": "No results found nearby. Try again later.",
+      "locationDeniedTitle": "Location Access Needed",
+      "locationDeniedMessage": "Turn on location access in Settings so we can find care near you.",
+      "openSettings": "Open Settings",
+      "tryAgain": "Try Again",
+      "genericError": "Something went wrong. Please try again.",
+      "distanceAway": "{{distance}} km away",
+      "reviewsCount": "({{count}} reviews)"
+    },
+    "more": {
+      "title": "More",
+      "logout": "Log Out",
+      "cancel": "Cancel",
+      "logoutConfirmTitle": "Log Out",
+      "logoutConfirmMessage": "Are you sure you want to log out?"
+    }
+  },
+  "chat": {
+    "title": "CureLiynk AI",
+    "back": "Back",
+    "send": "Send",
+    "stop": "Stop",
+    "emptyHeadline": "What's bothering you?",
+    "emptySubtitle": "Describe your symptoms in your own words. I'll tell you which doctor to see and find one near you.",
+    "examples": {
+      "cardiac": "My chest feels tight when I climb stairs",
+      "headache": "I have had a headache for five days",
+      "pediatric": "My child has a rash and a fever"
+    },
+    "placeholderNew": "Type your symptoms…",
+    "placeholderFollowUp": "Ask a follow-up…",
+    "thinking": "Checking the medical reference library…",
+    "disclaimer": "Not a diagnosis. In an emergency, call 108.",
+    "emergencyDisclaimer": "Not a diagnosis. Emergency services decide your care.",
+    "emergencyBanner": "This may be an emergency. Get help now.",
+    "callAmbulance": "Call 108 — ambulance",
+    "showAllNearby": "Show all {{specialty}} nearby",
+    "seeA": "See a {{doctorType}}.",
+    "doctorsIntro_one": "Here is one nearby:",
+    "doctorsIntro_other": "Here are {{count}} near you:",
+    "noDoctors": "I could not find a matching doctor near you right now.",
+    "noDoctorsNoLocation": "Turn on location to see doctors near you.",
+    "kmAway": "{{distance}} km away",
+    "openInMaps": "Open {{name}} in maps",
+    "retry": "Try again",
+    "errors": {
+      "network": "Couldn't reach the assistant. Check your connection and try again.",
+      "session": "Your session has ended. Please sign in again.",
+      "rateLimit": "That's a lot of questions at once. Please wait a moment before asking again.",
+      "rejected": "I couldn't read that question. Try describing your symptoms in a sentence or two.",
+      "unavailable": "The assistant is busy right now. Please try again in a moment.",
+      "generic": "Something went wrong. Please try again."
+    }
+  },
+  "profile": {
+    "title": "Profile",
+    "edit": "Edit",
+    "appearance": {
+      "title": "Appearance",
+      "subtitle": "Choose how CureLiynk looks on this device.",
+      "light": {
+        "title": "Light",
+        "subtitle": "Always use the light theme"
+      },
+      "dark": {
+        "title": "Dark",
+        "subtitle": "Always use the dark theme"
+      },
+      "system": {
+        "title": "System Default",
+        "subtitle": "Follow your device setting"
+      }
+    },
+    "sections": {
+      "healthRecord": "Health record",
+      "activity": "Your activity",
+      "settings": "Settings"
+    },
+    "rows": {
+      "conditions": "Conditions & medical history",
+      "allergies": "Allergies",
+      "medications": "Current medications",
+      "reports": "Reports & prescriptions",
+      "conversations": "Past conversations",
+      "savedDoctors": "Saved doctors",
+      "appointmentReminders": "Appointment reminders",
+      "language": "Language",
+      "location": "Location",
+      "emergencyContacts": "Emergency contacts",
+      "notifications": "Notifications",
+      "privacy": "Privacy & data",
+      "help": "Help & support"
+    },
+    "locationUnknown": "Not set",
+    "signOut": "Sign out",
+    "version": "CureLiynk AI · v{{version}}"
+  }
+}
