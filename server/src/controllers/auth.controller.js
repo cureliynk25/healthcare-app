@@ -212,8 +212,11 @@ const login = async (req, res) => {
         const accessToken = generateAccessToken(tokenPayload);
         const refreshToken = generateRefreshToken({ id: account._id.toString(), role: account.role });
 
-        // Persist refresh token
+        // Persist refresh token and record this login for usage tracking
         account.refreshToken = refreshToken;
+        account.lastLoginAt = new Date();
+        account.lastActiveAt = new Date();
+        account.loginCount = (account.loginCount || 0) + 1;
         await account.save();
 
         return successResponse(res, 200, "Login successful.", {
@@ -286,6 +289,9 @@ const googleAuth = async (req, res) => {
         const refreshToken = generateRefreshToken({ id: user._id.toString(), role: user.role });
 
         user.refreshToken = refreshToken;
+        user.lastLoginAt = new Date();
+        user.lastActiveAt = new Date();
+        user.loginCount = (user.loginCount || 0) + 1;
         await user.save();
 
         return successResponse(res, 200, "Google sign-in successful.", {

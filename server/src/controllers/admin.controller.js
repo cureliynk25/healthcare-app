@@ -13,22 +13,79 @@ const sanitize = (doc) => {
     return obj;
 };
 
+// Thresholds (in days) used to classify usage from lastActiveAt.
+const ACTIVE_WITHIN_DAYS = 7;
+const INACTIVE_WITHIN_DAYS = 30;
+
+/**
+ * computeStatus — classifies an account as "active", "inactive", or
+ * "churned" based on how long ago it was last seen. Never seen at all
+ * (lastActiveAt is null) counts as churned.
+ */
+const computeStatus = (lastActiveAt) => {
+    if (!lastActiveAt) return "churned";
+    const daysSinceActive = (Date.now() - new Date(lastActiveAt).getTime()) / 86400000;
+    if (daysSinceActive <= ACTIVE_WITHIN_DAYS) return "active";
+    if (daysSinceActive <= INACTIVE_WITHIN_DAYS) return "inactive";
+    return "churned";
+};
+
+/**
+ * activityFilter — translates a ?status= query value into a Mongo filter
+ * fragment on lastActiveAt, so status filtering can happen in the DB query
+ * even though status itself isn't a stored field.
+ */
+const activityFilter = (status) => {
+    const now = Date.now();
+    const activeSince = new Date(now - ACTIVE_WITHIN_DAYS * 86400000);
+    const inactiveSince = new Date(now - INACTIVE_WITHIN_DAYS * 86400000);
+
+    if (status === "active") return { lastActiveAt: { $gte: activeSince } };
+    if (status === "inactive") return { lastActiveAt: { $gte: inactiveSince, $lt: activeSince } };
+    if (status === "churned") {
+        return { $or: [{ lastActiveAt: null }, { lastActiveAt: { $lt: inactiveSince } }] };
+    }
+    return null;
+};
+
+/**
+ * activityBreakdown — buckets a list of { lastActiveAt } documents into
+ * active/inactive/churned counts.
+ */
+const activityBreakdown = (docs) => {
+    const counts = { active: 0, inactive: 0, churned: 0 };
+    for (const doc of docs) {
+        counts[computeStatus(doc.lastActiveAt)] += 1;
+    }
+    return counts;
+};
+
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/v1/admin/users
 // Get all registered users (patients) — Admin only
 // ─────────────────────────────────────────────────────────────────────────────
 const getAllUsers = async (req, res) => {
     try {
-        const { page = 1, limit = 20, isActive, search } = req.query;
+        const { page = 1, limit = 20, isActive, search, status } = req.query;
 
         const filter = {};
         if (isActive !== undefined) filter.isActive = isActive === "true";
+
+        // search and status can each need an $or clause — combine them under
+        // $and instead of letting the second overwrite the first.
+        const orClauses = [];
         if (search) {
-            filter.$or = [
-                { name: { $regex: search, $options: "i" } },
-                { email: { $regex: search, $options: "i" } },
-            ];
+            orClauses.push({
+                $or: [
+                    { name: { $regex: search, $options: "i" } },
+                    { email: { $regex: search, $options: "i" } },
+                ],
+            });
         }
+        const statusClause = activityFilter(status);
+        if (statusClause) orClauses.push(statusClause);
+        if (orClauses.length === 1) Object.assign(filter, orClauses[0]);
+        else if (orClauses.length > 1) filter.$and = orClauses;
 
         const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -38,7 +95,7 @@ const getAllUsers = async (req, res) => {
         ]);
 
         return successResponse(res, 200, "Users fetched successfully.", {
-            users: users.map(sanitize),
+            users: users.map((u) => ({ ...sanitize(u), status: computeStatus(u.lastActiveAt) })),
             pagination: {
                 currentPage: parseInt(page),
                 totalPages: Math.ceil(total / parseInt(limit)),
@@ -58,19 +115,27 @@ const getAllUsers = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const getAllDoctors = async (req, res) => {
     try {
-        const { page = 1, limit = 20, isApproved, isActive, search, specialization } = req.query;
+        const { page = 1, limit = 20, isApproved, isActive, search, specialization, status } = req.query;
 
         const filter = {};
         if (isApproved !== undefined) filter.isApproved = isApproved === "true";
         if (isActive !== undefined) filter.isActive = isActive === "true";
         if (specialization) filter.specialization = { $regex: specialization, $options: "i" };
+
+        const orClauses = [];
         if (search) {
-            filter.$or = [
-                { name: { $regex: search, $options: "i" } },
-                { email: { $regex: search, $options: "i" } },
-                { licenseNumber: { $regex: search, $options: "i" } },
-            ];
+            orClauses.push({
+                $or: [
+                    { name: { $regex: search, $options: "i" } },
+                    { email: { $regex: search, $options: "i" } },
+                    { licenseNumber: { $regex: search, $options: "i" } },
+                ],
+            });
         }
+        const statusClause = activityFilter(status);
+        if (statusClause) orClauses.push(statusClause);
+        if (orClauses.length === 1) Object.assign(filter, orClauses[0]);
+        else if (orClauses.length > 1) filter.$and = orClauses;
 
         const skip = (parseInt(page) - 1) * parseInt(limit);
 
@@ -80,7 +145,7 @@ const getAllDoctors = async (req, res) => {
         ]);
 
         return successResponse(res, 200, "Doctors fetched successfully.", {
-            doctors: doctors.map(sanitize),
+            doctors: doctors.map((d) => ({ ...sanitize(d), status: computeStatus(d.lastActiveAt) })),
             pagination: {
                 currentPage: parseInt(page),
                 totalPages: Math.ceil(total / parseInt(limit)),

@@ -13,6 +13,9 @@ const MODEL_MAP = {
     admin: Admin,
 };
 
+// How often (ms) a signed-in account's lastActiveAt gets refreshed.
+const ACTIVITY_STAMP_THROTTLE_MS = 5 * 60 * 1000;
+
 const authenticate = async (req, res, next) => {
     try {
         const authHeader = req.headers.authorization;
@@ -69,6 +72,15 @@ const authenticate = async (req, res, next) => {
             return errorResponse(res, 403, "Your doctor account is pending admin approval.");
         }
 
+        // Usage tracking: stamp "last active" on this request, throttled so an
+        // active session doesn't write to the DB on every single API call.
+        const lastStamp = user.lastActiveAt ? user.lastActiveAt.getTime() : 0;
+        if (Date.now() - lastStamp > ACTIVITY_STAMP_THROTTLE_MS) {
+            Model.updateOne({ _id: user._id }, { $set: { lastActiveAt: new Date() } }).catch((err) =>
+                console.error("[authenticate] Failed to stamp lastActiveAt:", err)
+            );
+        }
+
         req.user = user;
         next();
     } catch (error) {
@@ -101,4 +113,23 @@ const authorize = (...roles) => (req, res, next) => {
     next();
 };
 
-module.exports = { authenticate, authorize };
+/**
+ * requirePermission — gates a route to admins who have a specific permission
+ * in their `permissions` array, instead of any admin at all.
+ * Must be used AFTER authenticate (and typically after authorize('admin')).
+ *
+ * Usage: router.get('/stats', authenticate, authorize('admin'), requirePermission('view_analytics'), handler)
+ */
+const requirePermission = (permission) => (req, res, next) => {
+    if (!req.user) {
+        return errorResponse(res, 401, "Authentication required.");
+    }
+
+    if (req.user.role !== "admin" || !req.user.permissions?.includes(permission)) {
+        return errorResponse(res, 403, `Access denied. Requires the "${permission}" permission.`);
+    }
+
+    next();
+};
+
+module.exports = { authenticate, authorize, requirePermission };

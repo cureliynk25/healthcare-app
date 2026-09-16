@@ -68,6 +68,18 @@ const adminSchema = new mongoose.Schema(
             type: Boolean,
             default: true,
         },
+        lastLoginAt: {
+            type: Date,
+            default: null,
+        },
+        lastActiveAt: {
+            type: Date,
+            default: null,
+        },
+        loginCount: {
+            type: Number,
+            default: 0,
+        },
     },
     {
         timestamps: true,
