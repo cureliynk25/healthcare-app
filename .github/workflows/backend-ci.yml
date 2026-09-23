@@ -5,14 +5,14 @@ on:
     branches:
       - main
     paths:
-      - "CureLiynkMedical/backend/**"
+      - "CureliynkMedical/backend/**"
       - ".github/workflows/backend-ci.yml"
 
   pull_request:
     branches:
       - main
     paths:
-      - "CureLiynkMedical/backend/**"
+      - "CureliynkMedical/backend/**"
       - ".github/workflows/backend-ci.yml"
 
 
@@ -47,7 +47,7 @@ jobs:
 
     defaults:
       run:
-        working-directory: CureLiynkMedical/backend
+        working-directory: CureliynkMedical/backend
 
     steps:
 
@@ -62,7 +62,7 @@ jobs:
         with:
           python-version: "3.13"
           cache: "pip"
-          cache-dependency-path: CureLiynkMedical/backend/requirements.txt
+          cache-dependency-path: CureliynkMedical/backend/requirements.txt
 
 
       # 3. Upgrade pip
