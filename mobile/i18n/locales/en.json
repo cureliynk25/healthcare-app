@@ -188,6 +188,9 @@
       },
       "healthInsurance": {
         "title": "Health Insurance"
+      },
+      "ayurvedic": {
+        "title": "Ayurvedic"
       }
     },
     "upcomingMedicine": {
@@ -207,6 +210,10 @@
       "genericError": "Something went wrong. Please try again.",
       "distanceAway": "{{distance}} km away",
       "reviewsCount": "({{count}} reviews)"
+    },
+    "labsResults": {
+      "loading": "Finding labs near you...",
+      "emptyResults": "No laboratories found nearby. Try again later."
     },
     "more": {
       "title": "More",

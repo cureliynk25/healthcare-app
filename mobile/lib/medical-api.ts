@@ -55,6 +55,11 @@ export class MedicalApiError extends ApiError {
 type MedicalRequestOptions = {
   /** Lets the caller cancel — the chat screen wires this to its stop button. */
   signal?: AbortSignal;
+  /**
+   * Defaults to POST, which is what the chat endpoint uses. A GET sends no
+   * body, so anything it needs goes in the query string of `path`.
+   */
+  method?: "GET" | "POST";
 };
 
 /** The error body the backend returns for every failure. */
@@ -72,7 +77,8 @@ function messageForStatus(status: number, detail: string | undefined): string {
 }
 
 /**
- * POSTs to the medical service and returns the parsed body.
+ * Calls the medical service and returns the parsed body — a POST unless the
+ * caller asks for a GET.
  *
  * Throws `MedicalApiError` for every failure, including network ones, so
  * callers have a single error type to branch on.
@@ -80,7 +86,7 @@ function messageForStatus(status: number, detail: string | undefined): string {
 export async function medicalRequest<T>(
   path: string,
   body: unknown,
-  { signal }: MedicalRequestOptions = {},
+  { signal, method = "POST" }: MedicalRequestOptions = {},
 ): Promise<T> {
   /** One POST, with its own timeout, wired to the caller's abort signal. */
   const attempt = async (bearer: string): Promise<Response> => {
@@ -97,12 +103,12 @@ export async function medicalRequest<T>(
 
     try {
       return await fetch(`${MEDICAL_API_BASE_URL}${path}`, {
-        method: "POST",
+        method,
         headers: {
-          "Content-Type": "application/json",
+          ...(method === "POST" ? { "Content-Type": "application/json" } : {}),
           Authorization: `Bearer ${bearer}`,
         },
-        body: JSON.stringify(body),
+        body: method === "POST" ? JSON.stringify(body) : undefined,
         signal: controller.signal,
       });
     } catch (error) {

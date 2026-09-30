@@ -45,6 +45,23 @@ describe("medicalRequest", () => {
     global.fetch = originalFetch;
   });
 
+  it("sends a GET with no body and no content type when asked to", async () => {
+    (global.fetch as jest.Mock).mockResolvedValue(reply(200, { count: 0, laboratories: [] }));
+
+    const result = await medicalRequest("/api/v1/medical/laboratories/nearby?latitude=1", undefined, {
+      method: "GET",
+    });
+
+    expect(result).toEqual({ count: 0, laboratories: [] });
+
+    const [url, init] = (global.fetch as jest.Mock).mock.calls[0];
+    expect(url).toContain("/laboratories/nearby?latitude=1");
+    expect(init.method).toBe("GET");
+    expect(init.body).toBeUndefined();
+    expect(init.headers.Authorization).toBe("Bearer a-valid-token");
+    expect(init.headers["Content-Type"]).toBeUndefined();
+  });
+
   it("sends the bearer token and returns the parsed body", async () => {
     (global.fetch as jest.Mock).mockResolvedValue(reply(200, { urgency: "routine" }));
 

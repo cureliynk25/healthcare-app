@@ -60,6 +60,15 @@ const activityBreakdown = (docs) => {
     return counts;
 };
 
+/**
+ * canViewAnalytics — does this admin have the "view_analytics" permission?
+ * Usage-activity data (last login/active, login count, computed status) is
+ * only surfaced to admins who have it; other admins still get the same
+ * user/doctor list and dashboard counts they always have.
+ */
+const canViewAnalytics = (requester) =>
+    requester?.role === "admin" && requester.permissions?.includes("view_analytics");
+
 // ─────────────────────────────────────────────────────────────────────────────
 // GET /api/v1/admin/users
 // Get all registered users (patients) — Admin only
@@ -67,12 +76,14 @@ const activityBreakdown = (docs) => {
 const getAllUsers = async (req, res) => {
     try {
         const { page = 1, limit = 20, isActive, search, status } = req.query;
+        const showActivity = canViewAnalytics(req.user);
 
         const filter = {};
         if (isActive !== undefined) filter.isActive = isActive === "true";
 
         // search and status can each need an $or clause — combine them under
-        // $and instead of letting the second overwrite the first.
+        // $and instead of letting the second overwrite the first. The status
+        // filter only applies for admins allowed to see activity data.
         const orClauses = [];
         if (search) {
             orClauses.push({
@@ -82,7 +93,7 @@ const getAllUsers = async (req, res) => {
                 ],
             });
         }
-        const statusClause = activityFilter(status);
+        const statusClause = showActivity ? activityFilter(status) : null;
         if (statusClause) orClauses.push(statusClause);
         if (orClauses.length === 1) Object.assign(filter, orClauses[0]);
         else if (orClauses.length > 1) filter.$and = orClauses;
@@ -95,7 +106,16 @@ const getAllUsers = async (req, res) => {
         ]);
 
         return successResponse(res, 200, "Users fetched successfully.", {
-            users: users.map((u) => ({ ...sanitize(u), status: computeStatus(u.lastActiveAt) })),
+            users: users.map((u) => {
+                const plain = sanitize(u);
+                if (!showActivity) {
+                    delete plain.lastLoginAt;
+                    delete plain.lastActiveAt;
+                    delete plain.loginCount;
+                    return plain;
+                }
+                return { ...plain, status: computeStatus(u.lastActiveAt) };
+            }),
             pagination: {
                 currentPage: parseInt(page),
                 totalPages: Math.ceil(total / parseInt(limit)),
@@ -116,6 +136,7 @@ const getAllUsers = async (req, res) => {
 const getAllDoctors = async (req, res) => {
     try {
         const { page = 1, limit = 20, isApproved, isActive, search, specialization, status } = req.query;
+        const showActivity = canViewAnalytics(req.user);
 
         const filter = {};
         if (isApproved !== undefined) filter.isApproved = isApproved === "true";
@@ -132,7 +153,7 @@ const getAllDoctors = async (req, res) => {
                 ],
             });
         }
-        const statusClause = activityFilter(status);
+        const statusClause = showActivity ? activityFilter(status) : null;
         if (statusClause) orClauses.push(statusClause);
         if (orClauses.length === 1) Object.assign(filter, orClauses[0]);
         else if (orClauses.length > 1) filter.$and = orClauses;
@@ -145,7 +166,16 @@ const getAllDoctors = async (req, res) => {
         ]);
 
         return successResponse(res, 200, "Doctors fetched successfully.", {
-            doctors: doctors.map((d) => ({ ...sanitize(d), status: computeStatus(d.lastActiveAt) })),
+            doctors: doctors.map((d) => {
+                const plain = sanitize(d);
+                if (!showActivity) {
+                    delete plain.lastLoginAt;
+                    delete plain.lastActiveAt;
+                    delete plain.loginCount;
+                    return plain;
+                }
+                return { ...plain, status: computeStatus(d.lastActiveAt) };
+            }),
             pagination: {
                 currentPage: parseInt(page),
                 totalPages: Math.ceil(total / parseInt(limit)),
@@ -268,25 +298,33 @@ const toggleDoctorStatus = async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 const getDashboardStats = async (req, res) => {
     try {
-        const [
-            totalUsers,
-            activeUsers,
-            totalDoctors,
-            approvedDoctors,
-            pendingDoctors,
-            totalAdmins,
-        ] = await Promise.all([
-            User.countDocuments({}),
-            User.countDocuments({ isActive: true }),
-            Doctor.countDocuments({}),
-            Doctor.countDocuments({ isApproved: true }),
-            Doctor.countDocuments({ isApproved: false }),
-            Admin.countDocuments({}),
-        ]);
+        const showActivity = canViewAnalytics(req.user);
+
+        const [totalUsers, activeUsers, totalDoctors, approvedDoctors, pendingDoctors, totalAdmins] =
+            await Promise.all([
+                User.countDocuments({}),
+                User.countDocuments({ isActive: true }),
+                Doctor.countDocuments({}),
+                Doctor.countDocuments({ isApproved: true }),
+                Doctor.countDocuments({ isApproved: false }),
+                Admin.countDocuments({}),
+            ]);
+
+        const usersStats = { total: totalUsers, active: activeUsers, inactive: totalUsers - activeUsers };
+        const doctorsStats = { total: totalDoctors, approved: approvedDoctors, pending: pendingDoctors };
+
+        if (showActivity) {
+            const [userActivityDocs, doctorActivityDocs] = await Promise.all([
+                User.find({}).select("lastActiveAt"),
+                Doctor.find({}).select("lastActiveAt"),
+            ]);
+            usersStats.activity = activityBreakdown(userActivityDocs);
+            doctorsStats.activity = activityBreakdown(doctorActivityDocs);
+        }
 
         return successResponse(res, 200, "Dashboard stats fetched.", {
-            users: { total: totalUsers, active: activeUsers, inactive: totalUsers - activeUsers },
-            doctors: { total: totalDoctors, approved: approvedDoctors, pending: pendingDoctors },
+            users: usersStats,
+            doctors: doctorsStats,
             admins: { total: totalAdmins },
         });
     } catch (error) {
