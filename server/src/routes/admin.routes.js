@@ -23,7 +23,9 @@ router.use(authenticate, authorize("admin"));
 
 /**
  * @route   GET /api/v1/admin/stats
- * @desc    Get platform dashboard statistics
+ * @desc    Get platform dashboard statistics. The usage-activity breakdown
+ *          is only included for admins with the "view_analytics" permission;
+ *          the base counts remain available to any admin, as before.
  * @access  Admin only
  */
 router.get("/stats", getDashboardStats);
