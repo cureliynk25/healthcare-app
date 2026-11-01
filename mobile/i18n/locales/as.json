@@ -188,6 +188,9 @@
       },
       "healthInsurance": {
         "title": "স্বাস্থ্য বীমা"
+      },
+      "ayurvedic": {
+        "title": "আয়ুৰ্বেদিক"
       }
     },
     "upcomingMedicine": {
@@ -207,6 +210,10 @@
       "genericError": "কিবা এটা ভুল হ'ল। অনুগ্ৰহ কৰি পুনৰ চেষ্টা কৰক।",
       "distanceAway": "{{distance}} কিমি দূৰত",
       "reviewsCount": "({{count}}টা ৰিভিউ)"
+    },
+    "labsResults": {
+      "loading": "আপোনাৰ ওচৰৰ লেব বিচাৰি থকা হৈছে...",
+      "emptyResults": "ওচৰত কোনো লেব পোৱা নগ'ল। পাছত পুনৰ চেষ্টা কৰক।"
     },
     "more": {
       "title": "অধিক",

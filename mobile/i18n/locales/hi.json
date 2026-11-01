@@ -188,6 +188,9 @@
       },
       "healthInsurance": {
         "title": "स्वास्थ्य बीमा"
+      },
+      "ayurvedic": {
+        "title": "आयुर्वेदिक"
       }
     },
     "upcomingMedicine": {
@@ -207,6 +210,10 @@
       "genericError": "कुछ गलत हो गया। कृपया फिर से प्रयास करें।",
       "distanceAway": "{{distance}} किमी दूर",
       "reviewsCount": "({{count}} समीक्षाएं)"
+    },
+    "labsResults": {
+      "loading": "आपके पास की लैब खोजी जा रही हैं...",
+      "emptyResults": "आस-पास कोई लैब नहीं मिली। बाद में फिर से प्रयास करें।"
     },
     "more": {
       "title": "अधिक",

@@ -113,23 +113,4 @@ const authorize = (...roles) => (req, res, next) => {
     next();
 };
 
-/**
- * requirePermission — gates a route to admins who have a specific permission
- * in their `permissions` array, instead of any admin at all.
- * Must be used AFTER authenticate (and typically after authorize('admin')).
- *
- * Usage: router.get('/stats', authenticate, authorize('admin'), requirePermission('view_analytics'), handler)
- */
-const requirePermission = (permission) => (req, res, next) => {
-    if (!req.user) {
-        return errorResponse(res, 401, "Authentication required.");
-    }
-
-    if (req.user.role !== "admin" || !req.user.permissions?.includes(permission)) {
-        return errorResponse(res, 403, `Access denied. Requires the "${permission}" permission.`);
-    }
-
-    next();
-};
-
-module.exports = { authenticate, authorize, requirePermission };
+module.exports = { authenticate, authorize };
